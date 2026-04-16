@@ -2,10 +2,10 @@ import numpy as np
 import imageio.v2 as imageio
 import matplotlib.pyplot as plt
 import random
+import os
+import json
+import glob
 
-SIZE = 32
-STEPS = 100
-EVAL_REP = 3
 MUTATION_PROBABILITY = 0.005
 
 def calc_neighborhood_deprecated(matrix):
@@ -207,10 +207,10 @@ def run_evolution(generations, population, survival_rate):
 
 def animate(chromosome, filename):
     # Use a slightly larger size for better visibility in the GIF
-    matrix = gen_matrix(100)
+    matrix = gen_matrix(256)
     frames = []
 
-    for i in range(STEPS * 3):
+    for i in range(256):
         neigh = calc_neighborhood(matrix)
         matrix = apply_ruleset(neigh, chromosome)
 
@@ -227,3 +227,44 @@ def animate(chromosome, filename):
     # Save using imageio
     imageio.mimsave(f"{filename}.gif", frames, fps=20)
     print(f"Animation saved as {filename}.gif")
+
+def get_best_saved_chromosome(directory="chromosomes"):
+    """
+    Searches the given directory for chromosome JSON files and returns 
+    the one with the highest evaluated score.
+    """
+    if not os.path.exists(directory):
+        print(f"Directory '{directory}' does not exist.")
+        return None, None
+
+    best_score = -np.inf
+    best_chromosome_str = None
+    best_file = None
+
+    # Iterate through all chromosome JSON files
+    for file_path in glob.glob(os.path.join(directory, "chromosome*.json")):
+        try:
+            with open(file_path, 'r') as f:
+                data = json.load(f)
+                
+                # data[0] is the score, data[1] is the bitstring
+                score = float(data[0])
+                chrom_str = data[1]
+
+                if score > best_score:
+                    best_score = score
+                    best_chromosome_str = chrom_str
+                    best_file = file_path
+                    
+        except (json.JSONDecodeError, IndexError, ValueError) as e:
+            print(f"Skipping {file_path} due to read error: {e}")
+
+    if best_file:
+        print(f"--- Best Found in {os.path.basename(best_file)} ---")
+        print(f"Score: {best_score:.3f}")
+        print(f"Raw Chromosome: {best_chromosome_str}")
+        print("-" * (len(os.path.basename(best_file)) + 20))
+    else:
+        print("No valid chromosome files found in the directory.")
+
+    return best_score, best_chromosome_str
