@@ -210,7 +210,7 @@ def animate(chromosome, filename):
     matrix = gen_matrix(256)
     frames = []
 
-    for i in range(256):
+    for i in range(256*3):
         neigh = calc_neighborhood(matrix)
         matrix = apply_ruleset(neigh, chromosome)
 
