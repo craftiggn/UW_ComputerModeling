@@ -22,8 +22,8 @@ REPS = 3
 
 # final evaluation constatnt
 FINAL_SIZE = 256
-FINAL_STEPS = 100
-FINAL_REPS = 8
+FINAL_STEPS = 256 * 2
+FINAL_REPS = 3
 
 # evolution constants
 MUTATION_PROBABILITY = 0.005
@@ -195,8 +195,8 @@ def run_evolution(min_survival, max_survival, period_count, clone_to_procreation
     
     # We loop until we successfully claim a unique filename
     while not written:
-        # NOTE change here PC/ to avoid collision later
-        filename = f"chromosome_PC{attempt_idx:04d}.json"
+        # NOTE change here PC/LT to avoid collision later
+        filename = f"chromosome_LT_{attempt_idx:04d}.json"
         filepath = os.path.join(save_dir, filename)
         
         try:
@@ -232,22 +232,21 @@ def main():
         (10, 50, 8, 0.2, 1.0),
         (10, 50, 8, 0.4, 1.0),
         (10, 50, 8, 0.8, 1.0),
-        
-        (10, 50, 16, 0.2, 0.2),
-        (10, 50, 16, 0.2, 0.5),
-        (10, 50, 16, 0.2, 1.0),
-        (10, 50, 16, 0.2, 2.0),
-        (10, 50, 16, 0.2, 4.0),
-        (10, 50, 16, 0.2, 8.0),
 
         (5, 50, 8, 0.2, 1.0),
         (15, 50, 8, 0.2, 1.0),
         (30, 60, 8, 0.2, 1.0),
         (45, 50, 8, 0.2, 1.0), 
+        
+        (10, 50, 16, 0.2, 1.0),
+        (10, 50, 16, 0.2, 2.0),
+        (10, 50, 16, 0.2, 4.0),
+        (10, 50, 16, 0.2, 8.0),
     ]
     param_generator = cycle(param_list)
     # NOTE change here for lower cpu utilisation
-    max_workers = max(1, os.cpu_count() - 1)
+    max_workers = max(1, os.cpu_count() - 4)
+    # max_workers = 8
     
     print(f"--- Linux Evolution Engine Started ---")
     print(f"Parallel Workers: {max_workers} | Type 'stop' + Enter to exit.\n")
