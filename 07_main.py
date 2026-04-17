@@ -190,28 +190,40 @@ def run_evolution(min_survival, max_survival, period_count, clone_to_procreation
         
     clean_chromosome_str = "".join(best_chromosome.astype(str))
     
+    # 1. Find the current highest index to avoid checking thousands of existing files
+    existing_files = glob.glob(os.path.join(save_dir, "chromosome_PC*.json"))
+    highest_idx = 0
+    for f in existing_files:
+        try:
+            # Extract the number from 'chromosome_PC0042.json'
+            basename = os.path.basename(f)
+            num_str = basename.replace("chromosome_PC", "").replace(".json", "")
+            idx = int(num_str)
+            if idx > highest_idx:
+                highest_idx = idx
+        except ValueError:
+            continue # Skip if there's a weirdly named file
+            
+    attempt_idx = highest_idx + 1
+    attempt_idx += 100
     written = False
-    attempt_idx = 1
     
-    # We loop until we successfully claim a unique filename
+    # 2. Save atomically
     while not written:
         # NOTE change here PC/LT to avoid collision later
         filename = f"chromosome_LT_{attempt_idx:04d}.json"
         filepath = os.path.join(save_dir, filename)
         
         try:
-            # 'x' mode fails if the file already exists, making it "atomic"
             with open(filepath, 'x') as f:
                 json.dump([float(best_score), clean_chromosome_str], f, indent=4)
             written = True
         except FileExistsError:
-            # If someone else grabbed this index, increment and try again
             attempt_idx += 1
 
     print(f"Saved best chromosome (Score: {best_score:.3f}) to {filename}")
     return best_chromosome, best_score
 
-# run_evolution(10, 50, 10, 0.2)
 from concurrent.futures import ProcessPoolExecutor, wait, FIRST_COMPLETED
 
 def main():
