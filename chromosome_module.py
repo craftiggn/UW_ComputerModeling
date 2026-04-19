@@ -5,6 +5,7 @@ import random
 import os
 import json
 import glob
+from PIL import Image, ImageDraw
 
 MUTATION_PROBABILITY = 0.005
 
@@ -207,10 +208,10 @@ def run_evolution(generations, population, survival_rate):
 
 def animate(chromosome, filename):
     # Use a slightly larger size for better visibility in the GIF
-    matrix = gen_matrix(256)
+    matrix = gen_matrix(500)
     frames = []
 
-    for i in range(256*3):
+    for i in range(1200):
         neigh = calc_neighborhood(matrix)
         matrix = apply_ruleset(neigh, chromosome)
 
