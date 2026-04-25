@@ -1,0 +1,43 @@
+Act as an expert scientific computing engineer. Implement an Off-Lattice Eden-C cluster growth model in Python. 
+
+Because performance is absolutely critical to scale this up to 50,000 cells, you must strictly follow the highly optimized Numba-based architecture detailed below. Do not use object-oriented Python classes for the core simulation logic, and do not use native Python loops. 
+
+### **1. Architecture & Core Simulation (Numba)**
+Use `@njit` from `numba`. Pre-allocate all states using 1D numpy arrays of size `N_MAX` (e.g., `pos_x`, `pos_y`, `is_living`, `parent_ids`). 
+
+**Spatial Hashing:**
+Instead of `scipy.spatial.cKDTree` (which cannot be used inside `@njit`), implement a grid-based spatial hash using a 2D `grid_head` array and a 1D `grid_next` linked-list array. Use a grid size of 500 with an offset of 250, and cells scaled down by a factor of 2.0 to assign grid indices.
+
+**Physics Engine (`get_admissible_angle`):**
+Write a `@njit` helper function that evaluates a 5x5 grid neighborhood around a candidate cell. 
+* A cell (radius $r=1$) can only be placed at exactly distance 2.0 from its parent.
+* Iterate through neighboring grid cells to find existing simulation cells.
+* If a cell is closer than distance 4.0, calculate the blocked angular interval using `np.arccos(dist / 4.0)`.
+* Handle circular wrap-around for intervals (0 to $2\pi$).
+* Because native sorting isn't supported in Numba, use a manual bubble sort to order the blocked intervals by start angle.
+* Merge overlapping intervals and find the total available gap.
+* If gaps exist, sample a uniform random angle within the available gaps. If fully blocked, return `-100.0`.
+
+**Simulation Loop (`run_eden_c_simulation`):**
+* Initialize cell 0 at `(0,0)`. Set its `parent_id` to `-1`.
+* Maintain a pool of living indices using a `living_indices` array and a `living_map` to achieve $O(1)$ random selection and deletion.
+* In a loop up to `N_MAX=50000`, pick a random living cell. Call `get_admissible_angle`.
+* If an angle is returned, create the new cell, add it to the grid, record its parent in `parent_ids`, and add it to the living pool.
+* If `-100.0` is returned, mark the parent as dead and remove it from the living pool.
+* **Tracking Statistics:** Every `track_interval=100` steps, compute the center of mass, and evaluate the *true boundary* (filter out "lazy-dead" cells by re-evaluating `get_admissible_angle`). Record the true living count ($L$), mean radius ($R$), and boundary thickness ($\sigma$).
+* **Snapshot:** Exactly at 3,000 cells, capture copies of the `pos_x`, `pos_y`, `is_living`, and `parent_ids` arrays for later plotting.
+
+### **2. Statistical Verification (Main Python Space)**
+Run the simulation up to `N_MAX=50000`. Afterwards, use `scipy.stats.linregress` to calculate and print the following to the console:
+* **Interior Density ($\rho$)**: Slope of cell count vs. $r^2$ for the interior region (defined as the inner 60% of $r^2$ values). Expected: $\approx 0.6500$.
+* **Boundary Dynamics ($L$)**: Linear regression of $L$ vs $R$ (skip the first 10 tracked intervals to avoid initial noise). Expected slope: $\approx 3.580$.
+* **Boundary Thickness ($\sigma$)**: Power-law fit ($\log_{10}(\sigma)$ vs $\log_{10}(R)$) to find $a$ and $b$ in $\sigma = a \cdot R^b$. Expected: $a \approx 0.8813, b \approx 0.396$.
+
+### **3. Figure Specifications (Matplotlib)**
+Use `matplotlib.pyplot` and `PatchCollection` with `Circle` for fast rendering. Create a directory named `09` (overwriting existing files inside it) and save the following figures:
+* **Figure 1**: All 3,000 cells from the snapshot plotted as teal circles (radius 1). Equal aspect ratio.
+* **Figure 2**: Only the *true living* cells from the 3,000 cell snapshot, plotted as crimson circles. Equal aspect ratio.
+* **Figure 3**: Number of Enclosed Cells vs $(radius)^2$ (using the full 50k dataset). Line plot, navy color.
+* **Figure 4**: Number of Living Cells ($L$) vs Mean Radius ($R$). Line plot, forestgreen color.
+* **Figure 5**: Boundary Thickness ($\sigma$) vs Mean Radius ($R$). Line plot, purple color, Logarithmic Y-axis scale.
+* **Figure 7**: The growth network/skeleton of the 3,000-cell snapshot. Draw a 2D spatial plot connecting the center of each cell to the center of its parent cell using lines (a `LineCollection` is highly recommended for speed). Do not draw the cell circles themselves. Maintain an equal aspect ratio.
