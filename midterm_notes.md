@@ -166,3 +166,27 @@ dynamics
 conditions
 It may also be used to simulate the fluid with immersed
 moving objects (suspensions, polymers etc.)
+
+# 11 Game Theory
+- The **rules** of the game state who can do what, and
+when they can do it
+– A player's **strategy** is a plan for actions in each
+possible situation in the game
+– A player's **payoff** is the amount that the player wins
+or loses in a particular situation in a game
+– A players has a **dominant strategy** if his best
+strategy doesn’t depend on what other players do
+
+- Zero-sum - situation in which a participant's gain or losss is exactly balanced by the losses or gains of the other participants
+- Nash Equilibrium - a situation when each player's strategy is optimal, given the strategies of the other players
+- Every finite game has at least one Nash equilibrium in either pure (deterministic) or mixed (probabilistic) strategies
+- payoff matrix - in lecture slides
+
+# 12 Social Networks
+- graph theory - Euler
+- degree - the number of edges connected to a node
+- homophily - people tend to connect with people with similar beliefs
+- heterophobia - people tend to isolate themselfs from people with differing beliefs
+- social contagion - people tend to assume beliefs of their company as their own after elongated exposure
+
+# 13 River Networks
