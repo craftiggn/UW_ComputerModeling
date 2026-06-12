@@ -1,6 +1,6 @@
 # 1
 - Book "The general and logical theory of automata" -- 1948.
-- Automata is defined on a grid of cells, eahc of which can attain a discrete number of states.
+- Automata is defined on a grid of cells, each of which can attain a discrete number of states.
 - EVOLUTION -- cellular automata evolves according to the transition rules.
 - Neighbourhoods, in 2d:
     - von Neumann i.e. 4 cells
@@ -18,7 +18,7 @@
 - Classification of 1D automata:
     - Class 1 -- end up in a uniform state
     - Class 2 -- end up in a fixed point or a periodic orbit
-    - Class 3 -- chaotic behaoiour (sensitivity to initial conditions)
+    - Class 3 -- chaotic behaviour (sensitivity to initial conditions)
     - Class 4 -- "On the edge of chaos" in which the organized structures appera which propagate and interact with each other
 - Automata can be used to create: simple calculators, logical operations, TURING MACHINE.
 
@@ -71,9 +71,9 @@ Formalism:
         <!-- what is the weight here? -->
 
 # 6 Things in motion
-- sheeps or other large bodies of individuals exhibit behaviour similar to fluid when moving
+- sheep or other large bodies of individuals exhibit behaviour similar to fluid when moving
 - Reynolds model:
-    1. Separation -- Move to avoid crowding local flockamtes
+    1. Separation -- Move to avoid crowding local flockmates
     2. Alignment -- Match orientation and velocity of the neighbours
     3. Cohesion -- Move twoards the average position of the neighbours
 - Self organisation of the flock --> Emergence (large complex structures appear).
@@ -102,7 +102,7 @@ Formalism:
 - Evolution is a very successfull model finding nearly optimal solutions to complex problems
 - Genetic algorithms mimic evolution in a way that:
     - it finds a nearly optimal solution in a high-dimensional landscape
-    - is usefull when the proble is too complex and searching through a solution space is difficult
+    - is usefull when the problem is too complex, and searching through a solution space is difficult
     - the aim isn't perfection, rather a good, feasable solutions in an acceptable timescale
     - there is no guarantee that a perfect solution can even be found (and we might not even know if the algorithm will work)
 - Genetic algorithm features:
@@ -113,10 +113,10 @@ Formalism:
     - individuals can reproduce sexually, by cloning, or any other means. Frequency of mutations is a crucial factor (usually very low)
     - Max fitness of a population over time expressed as a graph tends to have these elements: slow evolution, rapid jump, stasis.
 - Punctuated equilibrium -- species are generally morphorogically stable, changing little for millions of years. This leisurely pace is "punctuated" by rapid burst of change that results in a new species.
-- Dynamic landscape -- due to cooperativity the landscape itself evolves with the species, concept of fitness becomes questionable. This can increase stability but can also lead to great extinctions when theis stability is finally disturbed.
+- Dynamic landscape -- due to cooperativity the landscape itself evolves with the species, concept of fitness becomes questionable. This can increase stability but can also lead to great extinctions when this stability is finally disturbed.
 
 # 8 Neural networks
-- Human learning should be represented as strengthening of some property of neurons XX century --> 1949 Donald Hebb
+- Human learning should be represented as strengthening of some property of neurons, XX century --> 1949 Donald Hebb
 - "Neurons that fire together, wire together. Neurons that fire out of sync, fail to link." -- Hebb's rule
 - Randomly destroying small percentages of the population does not affect the newtork's performance
 - Brains are very efficient
@@ -177,7 +177,7 @@ or loses in a particular situation in a game
 – A players has a **dominant strategy** if his best
 strategy doesn’t depend on what other players do
 
-- Zero-sum - situation in which a participant's gain or losss is exactly balanced by the losses or gains of the other participants
+- Zero-sum - situation in which a participant's gain or loss is exactly balanced by the losses or gains of the other participants
 - Nash Equilibrium - a situation when each player's strategy is optimal, given the strategies of the other players
 - Every finite game has at least one Nash equilibrium in either pure (deterministic) or mixed (probabilistic) strategies
 - payoff matrix - in lecture slides
